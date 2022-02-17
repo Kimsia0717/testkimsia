@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sia.mapper.MemberMapper">
+    <insert id="memberJoin" parameterType="com.sia.domain.MemberDTO">
+        INSERT INTO SIA_MEMBER VALUES(#{id},#{pw},#{ph},sysdate,'n')
+       
+    </insert>
+    <select id="idCheck" parameterType="String" resultType="int">
+        SELECT COUNT(*)  FROM SIA_MEMBER WHERE id=#{userId}
+    </select>
+    
+    <select id="memberLogin" parameterType="com.sia.domain.MemberDTO" resultType="com.sia.domain.MemberDTO">
+        SELECT * FROM SIA_MEMBER WHERE id=#{id} and pw=#{pw}
+    </select>
+</mapper>

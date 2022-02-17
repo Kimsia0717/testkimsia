@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+     <script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+ <form id="insertForm" action="/classin/in" method="post">
+ 
+	 <input type="text" name="userId" th:value="${session.member.id}">
+	 <input type="text" name="classId" value="배성원선생님반">
+	 <input type="text" name="academyId" value="휴먼교육센터">
+	 <input type="text" name="statusYn" value="n">
+	 <button id="classBtn">등록</button>
+	 
+ </form>
+  <form id="studentFrom"action="/classin/in" method="get">
+     <button id="mainBtn">메인으로</button>
+     <button id="logoutBtn">로그아웃</button>
+     
+     <table class="table table-hover">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="classIdAll"></th>
+                <th>아이디</th>
+                <th>반</th>
+                <th>학원</th>
+                <th>상태</th>
+            </tr>
+        </thead>
+         <tbody>
+            <tr th:if="${not #lists.isEmpty( classlist )}" th:each="row : ${classlist}">
+                <td><input type="checkbox" id="classid" name="checkname" th:value="${row.userId}"></td>
+                <td th:text="${row.userId}"></td>
+                <td th:text="${row.classId}"></td>
+                <td th:text="${row.academyId}"></td>
+                <td th:text="${row.statusYn}"></td>
+            </tr>
+            <tr th:unless="${not #lists.isEmpty(classlist)}">
+                <td colspan="5">조회된 학생이 없습니다.</td>
+            </tr>
+        </tbody>
+     </table>
+     <button id="callBtn">수락</button>
+     
+  </form>
+  <script>
+  let studentFrom = $("#studentFrom");
+  let insertForm = $("#insertForm");
+  $("#classIdAll").on("click",function(){
+	  if($("#classIdAll").is(":checked")){
+		  $("input[name=checkname]").prop("checked",true);
+	  }else{
+		  $("input[name=checkname]").prop("checked",false);
+	  }
+  })
+  $("#mainBtn").on("click",function(e){
+	  e.preventDefault();
+	  studentFrom.attr("action", "/member/main");
+	  studentFrom.submit();
+	  
+  })
+  </script>
+</body>
+</html>

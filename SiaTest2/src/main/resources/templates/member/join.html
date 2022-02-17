@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+    
+    
+    <th:block layout:fragment="title">
+        <title>회원 가입</title>
+    </th:block>
+
+    <th:block layout:fragment="content">
+        <h3>회원가입</h3>
+        <form action="/member/join" id="joinForm" method="post">
+          <div>
+          <label>아이디</label>
+          <input type="text" name="id" id="id" maxlength="15">
+          
+          <span id="dup">아이디를 입력해주세요.</span>
+        
+          </div>
+          <div>
+          <label>비밀번호</label>
+          <input type="password"name="pw" id="pw" maxlength="20">      
+          </div>
+          <div>
+          <label>휴대폰번호뒷자리</label>
+          <input type="text" name="ph" id="ph"maxlength="8">      
+          </div>
+        
+          <button class="joinBtn">회원가입</button>    
+          
+        </form>
+    </th:block>
+    <th:block layout:fragment="script">
+    <script th:inline="javascript">
+   
+    let form = $("#joinForm");
+   
+   
+    	$("#id").on("keyup", function(e){
+    		   console.log('hi');
+    		   //e.preventDefault();
+               
+               let id = $('#id').val();
+          if(id!=null&&id.length>=8){
+               console.log("id="+id);
+               $.ajax({
+            	    url:'/member/idCheck', //Controller에서 인식할 주소
+            	    type:'post', //POST 방식으로 전달
+            	    data:{userId:id},
+            	    success:function(outcome){
+            	        console.log(outcome);
+	                    if(outcome == 1){
+	                         $('#dup').text('중복된 아이디 입니다.');                         
+	                    }else{
+	                    	console.log('사용가능한 아이디입니다');
+	                    	 $('#dup').text('사용가능한 아이디입니다.');
+	                     }
+	                },
+	                error:function(){
+                        alert("에러입니다");
+                    }     
+	           });
+    	 }else{
+    	        $('#dup').text('아이디를입력해주세요.');
+    	  }
+        });
+    	
+   
+    $(".joinBtn").on("click", function(e){
+    	e.preventDefault();
+    	console.log('조인버튼진입');
+    	let dup = $("#dup").text();
+    	//if(dup=='사용가능한 아이디입니다')
+    	//form.sumit();
+    	(dup == '사용가능한 아이디입니다.')? form.submit() : alert('중복체크가 진행되지않았습니다');
+    })
+   
+    </script>
+    </th:block>
+</html>

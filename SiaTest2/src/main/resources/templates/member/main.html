@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+  <form action="/member/main" id="mainForm" method="get">
+     <div><input type="text" name="id" id="id" maxlength="15" th:value="${session.member.id}"></div>
+     <div><input type="text"name="pw" id="pw" maxlength="20" th:value="${session.member.pw}"></div>    
+     <div><input type="text"name="ph" id="ph" maxlength="8" th:value="${session.member.ph}"></div>
+     <a th:href="@{/classin/in}">반</a>
+      
+  </form>
+</body>
+</html>
