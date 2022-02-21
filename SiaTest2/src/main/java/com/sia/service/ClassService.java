@@ -10,4 +10,6 @@ public interface ClassService {
     public int ClassTotalCount();
 
     public List<ClassDTO> ClassView();
+
+    public int ClassCall(String id);
 }

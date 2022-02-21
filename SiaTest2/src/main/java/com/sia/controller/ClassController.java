@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sia.domain.ClassDTO;
@@ -36,9 +38,19 @@ public class ClassController {
     public String classInGet(Model model) {
         System.out.println("classinGet진입");
         List<ClassDTO> classlist = classservice.ClassView();
-        System.out.println(classlist);
         model.addAttribute("classlist", classlist);
         return "classin/classrq";
+    }
+
+    @PostMapping(value = "/classin/call")
+    @ResponseBody
+    public int classCallPost(@RequestParam(value = "userIds[]", required = false) List<String> checkArray) {
+        System.out.println("classCallPost진입");
+        int result = 0;
+        for (String id : checkArray) {
+            result = classservice.ClassCall(id);
+        }
+        return result;
     }
 
 }

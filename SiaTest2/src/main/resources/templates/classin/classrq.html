@@ -30,32 +30,34 @@
                 <th>반</th>
                 <th>학원</th>
                 <th>상태</th>
+                <th>인덱스</th>
             </tr>
         </thead>
          <tbody>
             <tr th:if="${not #lists.isEmpty( classlist )}" th:each="row : ${classlist}">
-                <td><input type="checkbox" id="classid" name="checkname" th:value="${row.userId}"></td>
+                <td><input type="checkbox" id="classcheck" name="check" th:value="${row.userId}"></td> 
                 <td th:text="${row.userId}"></td>
                 <td th:text="${row.classId}"></td>
                 <td th:text="${row.academyId}"></td>
-                <td th:text="${row.statusYn}"></td>
+                <td th:text="${row.statusYn}"></td> 
+                <td th:text="${rowStat.index}"></td>
             </tr>
             <tr th:unless="${not #lists.isEmpty(classlist)}">
                 <td colspan="5">조회된 학생이 없습니다.</td>
             </tr>
         </tbody>
      </table>
-     <button id="callBtn">수락</button>
-     
   </form>
+    <button id="callBtn">수락</button>
+     <button id="noBtn">거절</button>
   <script>
   let studentFrom = $("#studentFrom");
   let insertForm = $("#insertForm");
   $("#classIdAll").on("click",function(){
 	  if($("#classIdAll").is(":checked")){
-		  $("input[name=checkname]").prop("checked",true);
+		  $("input[name=check]").prop("checked",true);
 	  }else{
-		  $("input[name=checkname]").prop("checked",false);
+		  $("input[name=check]").prop("checked",false);
 	  }
   })
   $("#mainBtn").on("click",function(e){
@@ -63,6 +65,32 @@
 	  studentFrom.attr("action", "/member/main");
 	  studentFrom.submit();
 	  
+  })
+  
+  $("#callBtn").on("click",function(e){
+	   e.preventDefault();
+	   var checkArr = []; 
+	   $('input:checkbox[name=check]:checked').each(function() {
+		   checkArr.push(this.value); 
+		   console.log(checkArr[1]);
+	   });
+
+       $.ajax({
+           url:'/classin/call', //Controller에서 인식할 주소
+           type:'post', //POST 방식으로 전달
+           data:{userIds:checkArr},
+           success:function(data){
+                   console.log(data);
+                   if(data == 1){
+                       location.reload();
+                   }else{
+                       
+                    }
+           },
+           error:function(){
+                   alert("에러입니다");
+           }
+        });
   })
   </script>
 </body>

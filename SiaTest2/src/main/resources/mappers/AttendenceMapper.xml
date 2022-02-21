@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sia.mapper.AttendenceMapper">
+  
+  <select id="TodayDataCheck" resultType="int">
+    SELECT COUNT(*)  FROM SIA_MEMBER WHERE TO_CHAR(SDATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE,'YYYY-MM-DD')
+  </select>
+  <select id="AtdcSelect" parameterType="AttendenceDTO" resultType="AttendenceDTO">
+    SELECT b.class_date
+	      ,a.user_id
+	      ,a.class_id
+	      ,a.academy_id
+	      ,b.attendence_type 
+	      ,b.memo 
+      FROM SIA_CLASS a LEFT OUTER JOIN attendence b
+      ON (a.USER_ID = b.USER_ID AND TO_CHAR(b.CLASS_DATE,'YYYY-MM-DD') = #{classDate,jdbcType=VARCHAR}) 
+      WHERE a.STATUS_YN ='y' AND a.CLASS_ID ='배성원선생님반' 
+      AND a.ACADEMY_ID = '휴먼교육센터'
+  </select>
+  <insert id="AtdcInsert" parameterType="AttendenceDTO">
+    INSERT INTO attendence VALUES(#{classDate},#{userId},#{classId},#{academyId},#{attendenceType},#{memo,jdbcType=VARCHAR})
+  </insert>
+</mapper>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+ <script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+<form id="studentFrom"action="/classin/attendence" method="get">
+     <button id="mainBtn">메인으로</button>
+     <button id="logoutBtn">로그아웃</button>
+     <input th:if="${not #strings.isEmpty(classdate)}"type="date" id="classDate" name="classDate" th:value="${#temporals.format(classdate,'yyyy-MM-dd')">
+     <input th:unless="${not #strings.isEmpty(classdate)}" type="date" 
+     id="classDate" name="classDate" th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}">
+     <table class="table table-hover">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="classIdAll"></th>
+                <th>아이디</th>
+                <th>반</th>
+                <th>학원</th>
+                <th>출결상태</th>
+                <th>메모</th>
+            </tr>
+        </thead>
+         <tbody id="atdcTableBody">
+            <tr th:if="${not #lists.isEmpty( atlist )}" th:each="row, i : ${atlist}">
+                <td th:if="${not #strings.isEmpty(row.attendenceType)}">
+                <input type="checkbox" id="classcheck" name="check" th:value="${i.index}">
+                </td> 
+                <td th:unless="${not #strings.isEmpty(row.attendenceType)}">
+                 <input type="checkbox" id="classcheck" name="check" th:value="${i.index}">
+                </td> 
+                <td th:text="${row.userId}"></td>
+                <td th:text="${row.classId}"></td>
+                <td th:text="${row.academyId}"></td>
+                <td th:if="${not #strings.isEmpty(row.attendenceType)}" th:text="${row.attendenceType}"></td> 
+                <td th:unless="${not #strings.isEmpty(row.attendenceType)}">
+                  <select  name='selectatdc'>
+				  <option value='출석' selected>출석</option>
+				  <option value='결석'>결석</option>
+				  <option value='조퇴'>조퇴</option>
+				  <option value='지각'>지각</option>
+                </select></td> 
+                <td th:if="${not #strings.isEmpty(row.memo)}">
+                 <input type="textarea" name="memo" value="${row.memo}">
+                </td>
+                <td th:unless="${not #strings.isEmpty(row.memo)}">
+                 <input type="textarea" name="memo" value="">
+                </td>
+            </tr>
+            <tr th:unless="${not #lists.isEmpty(atlist)}">
+                <td colspan="5">조회된 학생이 없습니다.</td>
+            </tr>
+        </tbody>
+     </table>
+     <button id="atdcBtn">출석</button>
+     <button id="absentBtn">결석</button>
+     <button id="noBtn">지각</button>
+     <button id="noBtn">조퇴</button>
+     
+  </form>
+  <script>
+  let studentFrom = $("#studentFrom");
+  let insertForm = $("#insertForm");
+  
+  
+  
+  console.log('스크립트진입');
+  $("#classIdAll").on("click",function(){
+      if($("#classIdAll").is(":checked")){
+          $("input[name=check]").prop("checked",true);
+      }else{
+          $("input[name=check]").prop("checked",false);
+      }
+  })
+  $("#mainBtn").on("click",function(e){
+      e.preventDefault();
+      studentFrom.attr("action", "/member/main");
+      studentFrom.submit();
+      
+  })
+  
+  $("#atdcBtn").on("click",function(e){
+       e.preventDefault();
+       
+       
+       var rowdatas = document.getElementById("atdcTableBody").getElementsByTagName("tr"); 
+       var checkArr = [];
+       var Attendencedatas =[]; 
+       $('input:checkbox[name=check]:checked').each(function(i) {
+           checkArr.push(this.value); 
+           console.log(checkArr);
+       });
+       checkArr.forEach(function(i){
+    	   console.log(i);
+    	   console.log('for문진입');
+    	   var Attendencedata ={
+    		          classDate : 'date',
+    		          userId : 'id',
+    		          classId : 'classid',
+    		          academyId : 'academyId',
+    		          attendenceType : 'attendenceType',
+    		          memo : "memo"
+    		  }
+    	   var cells = rowdatas[i].getElementsByTagName("td");
+    	   Attendencedata.classDate = $("#classDate").val();
+    	   Attendencedata.userId = cells[1].firstChild.data;
+    	   Attendencedata.classId = cells[2].firstChild.data;
+    	   Attendencedata.academyId = cells[3].firstChild.data;
+    	   Attendencedata.attendenceType = cells[4].firstChild.data;
+    	   Attendencedata.memo = cells[5].firstChild.data;
+    	   Attendencedatas.push(Attendencedata);
+    	   console.log(Attendencedatas[2])
+       });
+       $.ajax({
+           url:'/classin/attendence', //Controller에서 인식할 주소
+           type:'post', //POST 방식으로 전달
+           contentType: 'application/json',
+           data: JSON.stringify(Attendencedatas),
+           success:function(data){
+                   console.log(data);
+                   if(data == 1){
+                	   alert('등록성공');
+                       location.reload();
+                   }else{
+                       
+                    }
+           },
+           error:function(){
+                   alert("에러입니다");
+           }
+        });
+  })
+  </script>
+</body>
+</html>

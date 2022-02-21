@@ -20,4 +20,9 @@
          SELECT <include refid="classColumns" />
          FROM sia_class
     </select>
+    
+    <update id="ClassCall" parameterType="String">
+        UPDATE SIA_CLASS SET STATUS_YN ='y'
+        WHERE USER_ID = #{id}
+    </update>
 </mapper>

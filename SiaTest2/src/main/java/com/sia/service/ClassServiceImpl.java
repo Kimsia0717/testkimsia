@@ -36,4 +36,9 @@ public class ClassServiceImpl implements ClassService {
 
         return ClassList;
     }
+
+    @Override
+    public int ClassCall(String id) {
+        return classmapper.ClassCall(id);
+    }
 }
